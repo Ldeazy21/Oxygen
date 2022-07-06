@@ -1,7 +1,7 @@
 {
-  "name": "chromium",
+  "name": "oxygen",
   "version": "1.0.0",
-  "description": "Microservice for all interactions for creating, retrieving, updating, and deleting pdf issues for customers of Sheen magazine (Issue Manager)",
+  "description": "Microservice for all interactions for creating, retrieving, updating, and deleting subscription metadata for customers of Sheen magazine (Subscription Manager)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,15 +13,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Exodus-Technologies/Chromium.git"
+    "url": "git+https://github.com/Exodus-Technologies/Oxygen.git"
   },
   "keywords": [],
   "author": "Exodus Technologies, LLC",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Exodus-Technologies/Chromium/issues"
+    "url": "https://github.com/Exodus-Technologies/Oxygen/issues"
   },
-  "homepage": "https://github.com/Exodus-Technologies/Chromium#readme",
+  "homepage": "https://github.com/Exodus-Technologies/Oxygen#readme",
   "dependencies": {
     "@babel/core": "^7.17.2",
     "@babel/preset-env": "^7.16.11",
