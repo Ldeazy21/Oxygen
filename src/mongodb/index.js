@@ -2,7 +2,6 @@
 
 import config from '../config';
 import models from '../models';
-import { DEFAULT_SUBSCRIPTION_TYPE } from '../constants';
 import {
   createMoment,
   getSubscriptionStartDate,
@@ -24,10 +23,7 @@ export const getSubscriptions = async query => {
     const page = parseInt(query.page);
     const limit = parseInt(query.limit);
     const skipIndex = (page - 1) * limit;
-    return await Subscription.find(
-      { ...query, type: DEFAULT_SUBSCRIPTION_TYPE },
-      queryOps
-    )
+    return await Subscription.find({ ...query }, queryOps)
       .sort({ _id: 1 })
       .limit(limit)
       .skip(skipIndex)
@@ -38,13 +34,23 @@ export const getSubscriptions = async query => {
   }
 };
 
+export const getSubscription = async subscriptionId => {
+  try {
+    const { Subscription } = models;
+    const subscription = await Subscription.findOne({ subscriptionId });
+    return subscription;
+  } catch (err) {
+    console.log('Error getting subscription data from db by id: ', err);
+  }
+};
+
 export const createSubscription = async payload => {
   try {
     const { Subscription } = models;
-    const { userId } = payload;
+    const { userId, type } = payload;
     const subscriptions = await Subscription.find({
       userId,
-      type: DEFAULT_SUBSCRIPTION_TYPE
+      type
     })
       .sort({
         endDate: 'desc'
@@ -97,10 +103,10 @@ export const createSubscription = async payload => {
 export const updateSubscription = async payload => {
   try {
     const { Subscription } = models;
-    const { userId, startDate } = payload;
+    const { userId, startDate, type } = payload;
     const subscriptions = await Subscription.find({
       userId,
-      type: DEFAULT_SUBSCRIPTION_TYPE
+      type
     })
       .sort({
         endDate: 'desc'
@@ -131,10 +137,10 @@ export const updateSubscription = async payload => {
 export const getSubscriptionStatus = async query => {
   try {
     const { Subscription } = models;
-    const { userId } = query;
+    const { userId, type } = query;
     const subscriptions = await Subscription.find({
       userId,
-      type: DEFAULT_SUBSCRIPTION_TYPE
+      type
     })
       .sort({
         endDate: 'desc'
@@ -153,6 +159,18 @@ export const getSubscriptionStatus = async query => {
     }
     return [''];
   } catch (err) {
-    console.log('Error saving subscription data to db: ', err);
+    console.log('Error getting subscription data to db: ', err);
+  }
+};
+
+export const deleteSubscription = async subscriptionId => {
+  try {
+    const { Subscription } = models;
+    const deletedSubscription = await Subscription.deleteOne({
+      subscriptionId
+    });
+    return deletedSubscription;
+  } catch (err) {
+    console.log('Error deleting subscription by id: ', err);
   }
 };

@@ -15,6 +15,34 @@ exports.getSubscriptions = async (req, res, next) => {
   }
 };
 
+exports.getSubscription = async (req, res, next) => {
+  try {
+    const { subscriptionId } = req.params;
+    const [statusCode, response] = await SubscriptionService.getSubscription(
+      subscriptionId
+    );
+    res.status(statusCode).send(response);
+  } catch (err) {
+    console.log(
+      `Error with getting subscription by id: ${subscriptionId} `,
+      err
+    );
+    next(err);
+  }
+};
+
+exports.getSubscriptionStatus = async (req, res, next) => {
+  try {
+    const { query } = req;
+    const [statusCode, response] =
+      await SubscriptionService.getSubscriptionStatus(query);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    console.log(`Error with getting subscription status: `, err);
+    next(err);
+  }
+};
+
 exports.createSubscription = async (req, res, next) => {
   try {
     const { body } = req;
@@ -41,14 +69,15 @@ exports.updateSubscription = async (req, res, next) => {
   }
 };
 
-exports.getSubscriptionStatus = async (req, res, next) => {
+exports.deleteSubscription = async (req, res, next) => {
   try {
-    const { query } = req;
-    const [statusCode, response] =
-      await SubscriptionService.getSubscriptionStatus(query);
+    const { subscriptionId } = req.params;
+    const [statusCode, response] = await SubscriptionService.deleteSubscription(
+      subscriptionId
+    );
     res.status(statusCode).send(response);
   } catch (err) {
-    console.log(`Error with getting subscription status: `, err);
+    console.log(`Error with deleting subscription: `, err);
     next(err);
   }
 };

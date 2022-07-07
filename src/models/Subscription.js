@@ -2,7 +2,6 @@
 
 import mongoose from 'mongoose';
 import config from '../config';
-import { DEFAULT_SUBSCRIPTION_TYPE } from '../constants';
 import { createSubscriptionId } from '../utilities';
 
 const { Schema } = mongoose;
@@ -11,13 +10,15 @@ const { NODE_ENV } = config;
 //ISSUE SCHEMA
 //  ============================================
 const subscriptionSchema = new Schema({
-  startDate: { type: String },
-  endDate: { type: String },
-  type: { type: String, default: DEFAULT_SUBSCRIPTION_TYPE },
+  subscriptionId: { type: String, default: createSubscriptionId() },
+  userId: { type: Number, required: true },
+  username: { type: String, required: true },
+  email: { type: String, required: true },
+  type: { type: String, required: true },
   purchaseDate: { type: String },
   amount: { type: Number, default: 15 },
-  userId: { type: Number, required: true },
-  subscriptionId: { type: String, default: createSubscriptionId() }
+  startDate: { type: String },
+  endDate: { type: String }
 });
 
 /**

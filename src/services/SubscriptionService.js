@@ -2,7 +2,9 @@ import {
   getSubscriptions,
   createSubscription,
   updateSubscription,
-  getSubscriptionStatus
+  getSubscriptionStatus,
+  getSubscription,
+  deleteSubscription
 } from '../mongodb';
 import { badImplementationRequest, badRequest } from '../response-codes';
 
@@ -22,6 +24,26 @@ exports.getSubscriptions = async query => {
   } catch (err) {
     console.log('Error getting all subscriptions: ', err);
     return badImplementationRequest('Error getting subscriptions.');
+  }
+};
+
+exports.getSubscription = async subscriptionId => {
+  try {
+    const subscription = await getSubscription(subscriptionId);
+    if (subscription) {
+      return [
+        200,
+        {
+          message: 'Successful fetch for subscription with id.',
+          subscription
+        }
+      ];
+    }
+  } catch (err) {
+    console.log('Error getting remaining time on subscription: ', err);
+    return badImplementationRequest(
+      'Error getting remaining time on subscription.'
+    );
   }
 };
 
@@ -79,5 +101,21 @@ exports.getSubscriptionStatus = async query => {
     return badImplementationRequest(
       'Error getting remaining time on subscription.'
     );
+  }
+};
+
+exports.deleteSubscription = async subscriptionId => {
+  try {
+    const subscription = await getSubscription(subscriptionId);
+    if (subscription) {
+      const deletedSubscription = await deleteSubscription(subscriptionId);
+      if (deletedSubscription) {
+        return [204];
+      }
+    }
+    return badRequest(`No subscription found with id provided.`);
+  } catch (err) {
+    console.log('Error deleting subscription by id: ', err);
+    return badImplementationRequest('Error deleting subscription by id.');
   }
 };

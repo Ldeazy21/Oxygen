@@ -6,38 +6,53 @@ import {
   subscriptionQueryValidation,
   subscriptionPostBodyValidation,
   subscriptionPutBodyValidation,
-  subscriptionStatusQueryValidation
+  subscriptionStatusQueryValidation,
+  subscriptionIdParamValidation
 } from '../validations';
 import { validationHandler } from '../middlewares';
 
 const router = Router();
 
 router.get(
-  '/issue-service/getSubscriptions',
+  '/subscription-service/getSubscriptions',
   subscriptionQueryValidation,
   validationHandler,
   SubscriptionController.getSubscriptions
 );
 
+router.get(
+  '/subscription-service/getSubscription/:subscriptionId',
+  subscriptionIdParamValidation,
+  validationHandler,
+  SubscriptionController.getSubscription
+);
+
+router.get(
+  '/subscription-service/getSubscriptionStatus',
+  subscriptionStatusQueryValidation,
+  validationHandler,
+  SubscriptionController.getSubscriptionStatus
+);
+
 router.post(
-  '/issue-service/createSubscription',
+  '/subscription-service/createSubscription',
   subscriptionPostBodyValidation,
   validationHandler,
   SubscriptionController.createSubscription
 );
 
 router.put(
-  '/issue-service/updateSubscription',
+  '/subscription-service/updateSubscription',
   subscriptionPutBodyValidation,
   validationHandler,
   SubscriptionController.updateSubscription
 );
 
-router.get(
-  '/issue-service/getSubscriptionStatus',
-  subscriptionStatusQueryValidation,
+router.delete(
+  '/subscription-service/deleteSubscription/:subscriptionId',
+  subscriptionIdParamValidation,
   validationHandler,
-  SubscriptionController.getSubscriptionStatus
+  SubscriptionController.deleteSubscription
 );
 
 export default router;
