@@ -16,6 +16,7 @@ const subscriptionSchema = new Schema({
   email: { type: String, required: true },
   type: { type: String, required: true },
   purchaseDate: { type: String },
+  recurring: { type: String },
   amount: { type: Number, default: 15 },
   startDate: { type: String },
   endDate: { type: String }

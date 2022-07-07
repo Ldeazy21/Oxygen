@@ -41,13 +41,6 @@ router.post(
   SubscriptionController.createSubscription
 );
 
-router.put(
-  '/subscription-service/updateSubscription',
-  subscriptionPutBodyValidation,
-  validationHandler,
-  SubscriptionController.updateSubscription
-);
-
 router.delete(
   '/subscription-service/deleteSubscription/:subscriptionId',
   subscriptionIdParamValidation,

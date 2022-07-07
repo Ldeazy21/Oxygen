@@ -32,18 +32,16 @@ const subscriptionPostBodyValidation = [
     .withMessage('Must provide a existing and valid email.'),
   body('username')
     .isString()
-    .withMessage('Must provide your first and last name.')
+    .withMessage('Must provide your first and last name.'),
+  body('recurring')
+    .isString()
+    .withMessage('Must provide the cadence of reoccurance.')
 ];
 
 const subscriptionStatusQueryValidation = [
-  query('userId').isString().withMessage('Must provide a valid userId.')
-];
-
-const subscriptionPutBodyValidation = [
-  body('startDate')
+  query('subscriptionId')
     .isString()
-    .withMessage('Must provide a valid startDate for subscription.'),
-  body('userId').isNumeric().withMessage('Must provide a valid userId.')
+    .withMessage('Must provide a existing subscription id.')
 ];
 
 export {
@@ -51,6 +49,5 @@ export {
   subscriptionIdParamValidation,
   subscriptionQueryValidation,
   subscriptionPostBodyValidation,
-  subscriptionPutBodyValidation,
   subscriptionStatusQueryValidation
 };

@@ -6,7 +6,7 @@ import {
   createMoment,
   getSubscriptionStartDate,
   getSubscriptionEndDate,
-  createFormattedDate
+  capitalizeFirstLetter
 } from '../utilities';
 
 const { dbUser, dbPass, clusterName, dbName } = config.sources.database;
@@ -47,112 +47,65 @@ export const getSubscription = async subscriptionId => {
 export const createSubscription = async payload => {
   try {
     const { Subscription } = models;
-    const { userId, type } = payload;
-    const subscriptions = await Subscription.find({
+    const { userId, type, recurring } = payload;
+    const subscription = await Subscription.findOne({
       userId,
-      type
-    })
-      .sort({
-        endDate: 'desc'
-      })
-      .limit(1);
-    if (!subscriptions.length) {
-      const body = {
-        ...payload,
-        startDate: payload.startDate
-          ? createFormattedDate(payload.startDate)
-          : getSubscriptionStartDate(),
-        endDate: payload.endDate
-          ? createFormattedDate(payload.endDate)
-          : getSubscriptionEndDate(),
-        purchaseDate: payload.purchaseDate
-          ? createFormattedDate(payload.purchaseDate)
-          : getSubscriptionStartDate()
-      };
-
-      const subscription = new Subscription(body);
-      const createdSubscription = await subscription.save();
-      const {
-        startDate,
-        endDate,
-        type,
-        purchaseDate,
-        amount,
-        userId,
-        subscriptionId
-      } = createdSubscription;
-      return [
-        null,
-        {
-          startDate,
-          endDate,
-          type,
-          purchaseDate,
-          amount,
-          userId,
-          subscriptionId
-        }
-      ];
+      type,
+      recurring
+    });
+    if (subscription) {
+      const endDate = createMoment(subscription.endDate);
+      const currentDate = createMoment();
+      const diffInMonths = endDate.diff(currentDate, 'months');
+      if (recurring === 'monthly' && Math.sign(diffInMonths) > 0) {
+        return [
+          new Error(
+            `${capitalizeFirstLetter(
+              type
+            )} subscription is still active for the current month.`
+          )
+        ];
+      }
+      if (recurring === 'yearly' && Math.sign(diffInMonths) < 12) {
+        return [
+          new Error(
+            `${capitalizeFirstLetter(
+              type
+            )} subscription is still active for the current year.`
+          )
+        ];
+      }
     }
-    return [new Error('Subscription is still active for the current year')];
+    const body = {
+      ...payload,
+      startDate: getSubscriptionStartDate(),
+      endDate: getSubscriptionEndDate(recurring),
+      purchaseDate: getSubscriptionStartDate()
+    };
+
+    const newSubscription = new Subscription(body);
+    const createdSubscription = await newSubscription.save();
+    return [null, createdSubscription];
   } catch (err) {
     console.log('Error saving subscription data to db: ', err);
-  }
-};
-
-export const updateSubscription = async payload => {
-  try {
-    const { Subscription } = models;
-    const { userId, startDate, type } = payload;
-    const subscriptions = await Subscription.find({
-      userId,
-      type
-    })
-      .sort({
-        endDate: 'desc'
-      })
-      .limit(1);
-
-    if (subscriptions) {
-      const subscription = subscriptions[0];
-      const filter = { subscriptionId: subscription.subscriptionId };
-      const options = { upsert: true, new: true };
-      const update = {
-        ...payload,
-        endDate: getSubscriptionEndDate(startDate)
-      };
-      const updatedSubscription = await Subscription.findOneAndUpdate(
-        filter,
-        update,
-        options
-      );
-      return [null, updatedSubscription];
-    }
-    return [new Error('No subscriptions to update')];
-  } catch (err) {
-    console.log('Error updating subscription data to db: ', err);
   }
 };
 
 export const getSubscriptionStatus = async query => {
   try {
     const { Subscription } = models;
-    const { userId, type } = query;
-    const subscriptions = await Subscription.find({
-      userId,
-      type
-    })
-      .sort({
-        endDate: 'desc'
-      })
-      .limit(1);
-    if (subscriptions.length) {
-      const subscription = subscriptions[0];
+    const { subscriptionId } = query;
+    const subscription = await Subscription.findOne({ subscriptionId });
+    if (subscription) {
       const endDate = createMoment(subscription.endDate);
       const currentDate = createMoment();
       const diffInMonths = endDate.diff(currentDate, 'months');
+      const diffInWeeks = endDate.diff(currentDate, 'weeks');
       if (Math.sign(diffInMonths) > 0) {
         return [`Subscription ends in ${diffInMonths} months.`];
+      }
+      if (Math.sign(diffInMonths) === 0) {
+        return [`Subscription ends in ${diffInWeeks} weeks.`];
       } else {
         return [`Subscription expired ${diffInMonths} months ago.`];
       }
