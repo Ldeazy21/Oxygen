@@ -13,7 +13,6 @@ const config = {
       dbName: process.env.DB_NAME,
       dbUser: process.env.DB_USER,
       dbPass: process.env.DB_PASS,
-      collectionName: process.env.COLLECTION_NAME,
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true
