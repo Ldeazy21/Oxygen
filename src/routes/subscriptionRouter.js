@@ -5,7 +5,6 @@ import { SubscriptionController } from '../controllers';
 import {
   subscriptionQueryValidation,
   subscriptionPostBodyValidation,
-  subscriptionPutBodyValidation,
   subscriptionStatusQueryValidation,
   subscriptionIdParamValidation
 } from '../validations';
