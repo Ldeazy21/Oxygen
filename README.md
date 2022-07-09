@@ -59,7 +59,6 @@ Oxygen utilizes dotenv[https://github.com/motdotla/dotenv] for environment varia
 - HOST (hostname for application)
 - DEFAULT_CACHE_TTL (ttl for node cache module for requests)
 - CLUSTER_NAME (mongo db cluster name)
-- COLLECTION_NAME (collection name for subscriptions)
 - DB_NAME (databse name)
 - DB_USER (databse user name)
 - DB_PASS (databse user password)
@@ -86,4 +85,4 @@ Oxygen utilizes various services provides by AWS:
 - ECR (Docker container registry)
 - ECS (Container Services that handles autoscaling and destination of "tasks")
 
-See [host](http://services-exodustechnologies.com/auth-service/probeCheck) for more details and a test drive...
+See [host](http://subscriptionloadbalancer-1625980188.us-east-1.elb.amazonaws.com/subscription-service/probeCheck) for more details and a test drive...
