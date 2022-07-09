@@ -2,7 +2,7 @@
 
 import express from 'express';
 import { cache } from '../middlewares';
-import { fancyTimeFormat } from '../utilities';
+import { fancyTimeFormat, createFormattedDate } from '../utilities';
 
 const { Router } = express;
 
@@ -19,7 +19,7 @@ router.get('/subscription-service/', cache(), (_, res) => {
 router.get('/subscription-service/probeCheck', (_, res) => {
   res.status(200).send({
     uptime: fancyTimeFormat(process.uptime()),
-    date: new Date(),
+    date: createFormattedDate(),
     message: 'Oxygen Subscription Manager service up and running!',
     appVersion: version
   });

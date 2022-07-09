@@ -40,11 +40,4 @@ router.post(
   SubscriptionController.createSubscription
 );
 
-router.delete(
-  '/subscription-service/deleteSubscription/:subscriptionId',
-  subscriptionIdParamValidation,
-  validationHandler,
-  SubscriptionController.deleteSubscription
-);
-
 export default router;

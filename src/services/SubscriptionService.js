@@ -2,8 +2,7 @@ import {
   getSubscriptions,
   createSubscription,
   getSubscriptionStatus,
-  getSubscription,
-  deleteSubscription
+  getSubscription
 } from '../mongodb';
 import { badImplementationRequest, badRequest } from '../response-codes';
 
@@ -81,21 +80,5 @@ exports.createSubscription = async payload => {
   } catch (err) {
     console.log('Error creating subscription: ', err);
     return badImplementationRequest('Error creating subscription.');
-  }
-};
-
-exports.deleteSubscription = async subscriptionId => {
-  try {
-    const subscription = await getSubscription(subscriptionId);
-    if (subscription) {
-      const deletedSubscription = await deleteSubscription(subscriptionId);
-      if (deletedSubscription) {
-        return [204];
-      }
-    }
-    return badRequest(`No subscription found with id provided.`);
-  } catch (err) {
-    console.log('Error deleting subscription by id: ', err);
-    return badImplementationRequest('Error deleting subscription by id.');
   }
 };

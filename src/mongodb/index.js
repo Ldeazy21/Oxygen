@@ -115,15 +115,3 @@ export const getSubscriptionStatus = async query => {
     console.log('Error getting subscription data to db: ', err);
   }
 };
-
-export const deleteSubscription = async subscriptionId => {
-  try {
-    const { Subscription } = models;
-    const deletedSubscription = await Subscription.deleteOne({
-      subscriptionId
-    });
-    return deletedSubscription;
-  } catch (err) {
-    console.log('Error deleting subscription by id: ', err);
-  }
-};

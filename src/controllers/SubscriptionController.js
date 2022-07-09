@@ -55,16 +55,3 @@ exports.createSubscription = async (req, res, next) => {
     next(err);
   }
 };
-
-exports.deleteSubscription = async (req, res, next) => {
-  try {
-    const { subscriptionId } = req.params;
-    const [statusCode, response] = await SubscriptionService.deleteSubscription(
-      subscriptionId
-    );
-    res.status(statusCode).send(response);
-  } catch (err) {
-    console.log(`Error with deleting subscription: `, err);
-    next(err);
-  }
-};
