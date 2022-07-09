@@ -37,6 +37,7 @@ exports.getSubscription = async subscriptionId => {
         }
       ];
     }
+    return badRequest(`No subscriptions found with id: ${subscriptionId}.`);
   } catch (err) {
     console.log('Error getting remaining time on subscription: ', err);
     return badImplementationRequest(
