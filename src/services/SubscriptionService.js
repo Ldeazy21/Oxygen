@@ -57,6 +57,7 @@ exports.getSubscriptionStatus = async query => {
         }
       ];
     }
+    return badRequest(`No subscriptions found with query.`);
   } catch (err) {
     console.log('Error getting remaining time on subscription: ', err);
     return badImplementationRequest(
