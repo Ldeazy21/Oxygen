@@ -44,10 +44,20 @@ const subscriptionStatusQueryValidation = [
     .withMessage('Must provide a existing subscription id.')
 ];
 
+const subscriptionUpdateBodyValidation = [
+  body('subscriptionId')
+    .isString()
+    .withMessage('Must provide a existing subscription id.'),
+  body('recurring')
+    .isString()
+    .withMessage('Must provide a valid recurring schedule of subscription.')
+];
+
 export {
   validationResult,
   subscriptionIdParamValidation,
   subscriptionQueryValidation,
   subscriptionPostBodyValidation,
-  subscriptionStatusQueryValidation
+  subscriptionStatusQueryValidation,
+  subscriptionUpdateBodyValidation
 };
