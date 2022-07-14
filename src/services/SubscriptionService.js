@@ -84,3 +84,22 @@ exports.createSubscription = async payload => {
     return badImplementationRequest('Error creating subscription.');
   }
 };
+
+exports.updateSubscription = async payload => {
+  try {
+    const [error, updatedSubscription] = await updateSubscription(payload);
+    if (updatedSubscription) {
+      return [
+        200,
+        {
+          message: 'Successful update of subscription.',
+          updatedSubscription
+        }
+      ];
+    }
+    return badRequest(error.message);
+  } catch (err) {
+    console.log('Error updating subscription: ', err);
+    return badImplementationRequest('Error updating subscription.');
+  }
+};

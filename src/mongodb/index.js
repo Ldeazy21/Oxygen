@@ -115,3 +115,25 @@ export const getSubscriptionStatus = async query => {
     console.log('Error getting subscription data to db: ', err);
   }
 };
+
+export const updateSubscription = async payload => {
+  try {
+    const { Subscription } = models;
+    const { subscriptionId, recurring } = payload;
+    const filter = { subscriptionId };
+    const options = { upsert: true, new: true };
+    const update = { ...payload, endDate: getSubscriptionEndDate(recurring) };
+
+    const updatedSubscription = await Subscription.findOneAndUpdate(
+      filter,
+      update,
+      options
+    );
+    if (updatedSubscription) {
+      return [null, updatedSubscription];
+    }
+    return [new Error('Unable to update subscription.')];
+  } catch (err) {
+    console.log('Error updating issue data to db: ', err);
+  }
+};
