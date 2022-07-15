@@ -4,6 +4,7 @@
  * https://github.com/validatorjs/validator.js#validators
  */
 import { query, body, param, validationResult } from 'express-validator';
+import { RECURRING_TYPES, SUBSCRIPTION_TYPES } from '../constants';
 
 const subscriptionQueryValidation = [
   query('page')
@@ -35,7 +36,22 @@ const subscriptionPostBodyValidation = [
     .withMessage('Must provide your first and last name.'),
   body('recurring')
     .isString()
-    .withMessage('Must provide the cadence of reoccurance.')
+    .custom(recurring => {
+      if (!RECURRING_TYPES.includes(recurring)) {
+        throw new Error('Cadence submitted is not allowed for this field.');
+      }
+      // Indicates the success of this synchronous custom validator
+      return true;
+    }),
+  body('type')
+    .isString()
+    .custom(type => {
+      if (!SUBSCRIPTION_TYPES.includes(type)) {
+        throw new Error('Type submitted is not allowed for this field.');
+      }
+      // Indicates the success of this synchronous custom validator
+      return true;
+    })
 ];
 
 const subscriptionStatusQueryValidation = [
