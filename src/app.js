@@ -11,7 +11,7 @@ import { generateDBUri } from './mongodb';
 const startServer = async () => {
   const { PORT, HOST } = config;
   try {
-    await server.listen(PORT, HOST);
+    await server.listen(PORT);
     console.log(`Server listening on port: ${PORT}`);
   } catch (err) {
     console.log(`Server started with error: ${err}`);

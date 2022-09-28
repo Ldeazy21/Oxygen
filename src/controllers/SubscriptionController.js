@@ -30,6 +30,20 @@ exports.getSubscription = async (req, res, next) => {
     next(err);
   }
 };
+exports.getMyVidSubscription = async (req, res, next) => {
+  try {
+    const { query } = req;
+    const [statusCode, response] =
+      await SubscriptionService.getMyVidSubscription(query);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    console.log(
+      `Error with getting subscription by id: ${subscriptionId} `,
+      err
+    );
+    next(err);
+  }
+};
 
 exports.getSubscriptionStatus = async (req, res, next) => {
   try {

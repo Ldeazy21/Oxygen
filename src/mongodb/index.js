@@ -12,7 +12,8 @@ import {
 const { dbUser, dbPass, clusterName, dbName } = config.sources.database;
 
 export const generateDBUri = () => {
-  return `mongodb+srv://${dbUser}:${dbPass}@${clusterName}.ybdno.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+  // return `mongodb+srv://${dbUser}:${dbPass}@${clusterName}.ybdno.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+  return 'mongodb+srv://sheen:sheenPW1@cluster0.2sgamix.mongodb.net/test?retryWrites=true&w=majority';
 };
 
 const queryOps = { __v: 0, _id: 0 };
@@ -38,6 +39,16 @@ export const getSubscription = async subscriptionId => {
   try {
     const { Subscription } = models;
     const subscription = await Subscription.findOne({ subscriptionId });
+    return subscription;
+  } catch (err) {
+    console.log('Error getting subscription data from db by id: ', err);
+  }
+};
+
+export const getMyVidSubscription = async query => {
+  try {
+    const { Subscription } = models;
+    const subscription = await Subscription.findOne({ query });
     return subscription;
   } catch (err) {
     console.log('Error getting subscription data from db by id: ', err);

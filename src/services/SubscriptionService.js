@@ -2,7 +2,8 @@ import {
   getSubscriptions,
   createSubscription,
   getSubscriptionStatus,
-  getSubscription
+  getSubscription,
+  getMyVidSubscription
 } from '../mongodb';
 import { badImplementationRequest, badRequest } from '../response-codes';
 
@@ -38,6 +39,27 @@ exports.getSubscription = async subscriptionId => {
       ];
     }
     return badRequest(`No subscriptions found with id: ${subscriptionId}.`);
+  } catch (err) {
+    console.log('Error getting remaining time on subscription: ', err);
+    return badImplementationRequest(
+      'Error getting remaining time on subscription.'
+    );
+  }
+};
+
+exports.getMyVidSubscription = async query => {
+  try {
+    const subscription = await getMyVidSubscription(query);
+    if (subscription) {
+      return [
+        200,
+        {
+          message: 'Successful fetch for subscription with id.',
+          subscription
+        }
+      ];
+    }
+    return badRequest(`No subscriptions found with query: ${query}.`);
   } catch (err) {
     console.log('Error getting remaining time on subscription: ', err);
     return badImplementationRequest(

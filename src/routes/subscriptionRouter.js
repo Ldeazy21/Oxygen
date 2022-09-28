@@ -33,6 +33,12 @@ router.get(
   validationHandler,
   SubscriptionController.getSubscriptionStatus
 );
+router.get(
+  '/subscription-service/getMyVidSubscription',
+  subscriptionStatusQueryValidation,
+  validationHandler,
+  SubscriptionController.getMyVidSubscription
+);
 
 router.post(
   '/subscription-service/createSubscription',
