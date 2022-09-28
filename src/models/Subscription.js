@@ -21,7 +21,8 @@ const subscriptionSchema = new Schema({
   recurring: { type: String, enum: RECURRING_TYPES },
   amount: { type: Number, default: 15 },
   startDate: { type: String },
-  endDate: { type: String }
+  endDate: { type: String },
+  adapty: { type: Object }
 });
 
 /**

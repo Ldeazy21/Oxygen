@@ -64,11 +64,13 @@ export const createSubscription = async payload => {
       type,
       recurring
     });
+    console.log('subscription: ', subscription);
     if (subscription) {
       const endDate = createMoment(subscription.endDate);
       const currentDate = createMoment();
       const diffInMonths = endDate.diff(currentDate, 'months');
-      if (recurring === 'monthly' && Math.sign(diffInMonths) > 0) {
+      console.log('diffInMonths: ', diffInMonths);
+      if (recurring === 'monthly' && Math.sign(diffInMonths) >= 0) {
         return [
           new Error(
             `${capitalizeFirstLetter(
