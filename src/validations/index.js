@@ -59,11 +59,6 @@ const subscriptionStatusQueryValidation = [
     .isString()
     .withMessage('Must provide a existing subscription id.')
 ];
-const subscriptionQueryValidation = [
-  query('subscriptionId')
-    .isString()
-    .withMessage('Must provide a existing subscription id.')
-];
 
 const subscriptionUpdateBodyValidation = [
   body('subscriptionId')
