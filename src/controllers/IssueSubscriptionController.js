@@ -16,7 +16,7 @@ exports.getSubscriptions = async (req, res, next) => {
 
 exports.getSubscription = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.query;
     console.log('subscriptionId:xxxxxs ', userId);
     const [statusCode, response] =
       await IssueSubscriptionService.getIssueSubscription(userId);

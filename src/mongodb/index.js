@@ -171,7 +171,7 @@ export const getIssuSubscriptions = async query => {
 export const getIssueSubscription = async userId => {
   try {
     const { IssueSubscription } = models;
-    const subscription = await IssueSubscription.findOne(userId);
+    const subscription = await IssueSubscription.findOne({ userId: userId });
     return subscription;
   } catch (err) {
     console.log('Error getting IssueSubscription data from db by id: ', err);
