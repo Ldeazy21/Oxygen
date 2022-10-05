@@ -12,8 +12,8 @@ import {
 const { dbUser, dbPass, clusterName, dbName } = config.sources.database;
 
 export const generateDBUri = () => {
-  // return `mongodb+srv://${dbUser}:${dbPass}@${clusterName}.ybdno.mongodb.net/${dbName}?retryWrites=true&w=majority`;
-  return 'mongodb+srv://sheen:sheenPW1@cluster0.2sgamix.mongodb.net/test?retryWrites=true&w=majority';
+  return `mongodb+srv://${dbUser}:${dbPass}@${clusterName}.ybdno.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+  // return 'mongodb+srv://sheen:sheenPW1@cluster0.2sgamix.mongodb.net/test?retryWrites=true&w=majority';
 };
 
 const queryOps = { __v: 0, _id: 0 };
@@ -148,5 +148,148 @@ export const updateSubscription = async payload => {
     return [new Error('Unable to update subscription.')];
   } catch (err) {
     console.log('Error updating issue data to db: ', err);
+  }
+};
+
+export const getIssuSubscriptions = async query => {
+  try {
+    const { IssueSubscription } = models;
+    const page = parseInt(query.page);
+    const limit = parseInt(query.limit);
+    const skipIndex = (page - 1) * limit;
+    return await IssueSubscription.find({ ...query }, queryOps)
+      .sort({ _id: 1 })
+      .limit(limit)
+      .skip(skipIndex)
+      .sort({ endDate: 'asc' })
+      .exec();
+  } catch (err) {
+    console.log('Error getting IssueSubscription data from db: ', err);
+  }
+};
+
+export const getIssueSubscription = async userId => {
+  try {
+    const { IssueSubscription } = models;
+    const subscription = await IssueSubscription.findOne(userId);
+    return subscription;
+  } catch (err) {
+    console.log('Error getting IssueSubscription data from db by id: ', err);
+  }
+};
+
+export const createIssueSubscription = async payload => {
+  try {
+    const { IssueSubscription } = models;
+    const { userId, bundle } = payload;
+    const subscription = await IssueSubscription.findOne({
+      userId
+    });
+
+    if (subscription) {
+      return [
+        new Error(
+          `${capitalizeFirstLetter(
+            type
+          )} subscription is still active for the current year.`
+        )
+      ];
+    } else {
+      const newBundle = {
+        ...bundle,
+        startDate: getSubscriptionStartDate(),
+        endDate: getSubscriptionStartDate()
+      };
+      const body = {
+        ...payload,
+        bundle: newBundle
+      };
+
+      const newSubscription = new IssueSubscription(body);
+      const createdSubscription = await newSubscription.save();
+      return [createdSubscription];
+    }
+  } catch (err) {
+    console.log('Error saving IssueSubscription data to db: ', err);
+  }
+};
+
+export const updateIssueSubscription = async payload => {
+  try {
+    const { IssueSubscription } = models;
+    const { userId } = payload;
+    const filter = { userId };
+    const options = { upsert: true, new: false };
+    const update = { ...payload };
+
+    const updatedSubscription = await IssueSubscription.findOneAndUpdate(
+      filter,
+      update,
+      options
+    );
+    if (updatedSubscription) {
+      return [null, updatedSubscription];
+    }
+    return [new Error('Unable to update IssueSubscription.')];
+  } catch (err) {
+    console.log('Error updating IssueSubscription data to db: ', err);
+  }
+};
+
+export const addIssueToSubscription = async payload => {
+  try {
+    const { IssueSubscription } = models;
+    const { userId, issue } = payload;
+    const filter = { userId };
+    const options = { upsert: true, new: false };
+    // push issue to issues array mongoose
+    const update = {
+      $push: { myisssues: issue },
+      $inc: { 'bundle.left': -1 }
+    };
+    // $push: { 'myisssues': issue, 'bundle.left': { $inc: 1 } }
+    // z
+
+    const updatedSubscription = await IssueSubscription.findOneAndUpdate(
+      filter,
+      update,
+      options
+    );
+    if (updatedSubscription) {
+      return [null, updatedSubscription];
+    }
+    return [new Error('Unable to update IssueSubscription.')];
+  } catch (err) {
+    console.log('Error updating IssueSubscription data to db: ', err);
+  }
+};
+
+export const addBundleToSubscription = async payload => {
+  try {
+    const { IssueSubscription } = models;
+    const { userId, issue } = payload;
+    const filter = { userId };
+    const options = { upsert: true, new: false };
+    // push issue to issues array mongoose
+    const update = {
+      bundle: {
+        status: true,
+        left: 6,
+        startDate: getSubscriptionStartDate(),
+        endDate: getSubscriptionEndDate('yearly')
+      }
+    };
+
+    const updatedSubscription = await IssueSubscription.findOneAndUpdate(
+      filter,
+      update,
+      options
+    );
+    if (updatedSubscription) {
+      return [null, updatedSubscription];
+    }
+    return [new Error('Unable to update IssueSubscription.')];
+  } catch (err) {
+    console.log('Error updating IssueSubscription data to db: ', err);
   }
 };
