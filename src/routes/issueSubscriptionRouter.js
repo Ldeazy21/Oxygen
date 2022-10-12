@@ -48,6 +48,10 @@ router.put(
   '/subscription-service/addBundleToSubscription',
   IssueSubscriptionController.addBundleToSubscription
 );
+router.put(
+  '/subscription-service/addIssueToBundle',
+  IssueSubscriptionController.addIssueToBundle
+);
 //TODO: Add endpoint for update subscription with recurring field and endDate
 
 export default router;

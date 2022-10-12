@@ -4,7 +4,8 @@ import {
   createIssueSubscription,
   updateIssueSubscription,
   addBundleToSubscription,
-  addIssueToSubscription
+  addIssueToSubscription,
+  addIssueToBundle
 } from '../mongodb';
 import { badImplementationRequest, badRequest } from '../response-codes';
 
@@ -125,6 +126,27 @@ exports.addBundleToSubscription = async payload => {
       ];
     }
     return badRequest(`No subscriptions found with id: ${subscriptionId}.`);
+  } catch (err) {
+    console.log('Error getting remaining time on subscription: ', err);
+    return badImplementationRequest(
+      'Error getting remaining time on subscription.'
+    );
+  }
+};
+
+exports.addIssueToBundle = async payload => {
+  try {
+    const subscription = await addIssueToBundle(payload);
+    if (subscription) {
+      return [
+        200,
+        {
+          message: 'Successful add Issue To Bundle with id.',
+          subscription
+        }
+      ];
+    }
+    return badRequest(`No subscriptions found with id.`);
   } catch (err) {
     console.log('Error getting remaining time on subscription: ', err);
     return badImplementationRequest(

@@ -73,3 +73,15 @@ exports.addBundleToSubscription = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.addIssueToBundle = async (req, res, next) => {
+  try {
+    const { body } = req;
+    const [statusCode, response] =
+      await IssueSubscriptionService.addIssueToBundle(body);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    console.log(`Error with updating subscription: `, err);
+    next(err);
+  }
+};

@@ -241,14 +241,12 @@ export const addIssueToSubscription = async payload => {
     const { IssueSubscription } = models;
     const { userId, issue } = payload;
     const filter = { userId };
+    const user = await IssueSubscription.findOne(filter);
     const options = { upsert: true, new: false };
     // push issue to issues array mongoose
     const update = {
-      $push: { myisssues: issue },
-      $inc: { 'bundle.left': -1 }
+      $push: { myisssues: issue }
     };
-    // $push: { 'myisssues': issue, 'bundle.left': { $inc: 1 } }
-    // z
 
     const updatedSubscription = await IssueSubscription.findOneAndUpdate(
       filter,
@@ -267,7 +265,7 @@ export const addIssueToSubscription = async payload => {
 export const addBundleToSubscription = async payload => {
   try {
     const { IssueSubscription } = models;
-    const { userId, issue } = payload;
+    const { userId } = payload;
     const filter = { userId };
     const options = { upsert: true, new: false };
     // push issue to issues array mongoose
@@ -279,6 +277,35 @@ export const addBundleToSubscription = async payload => {
         endDate: getSubscriptionEndDate('yearly')
       }
     };
+
+    const updatedSubscription = await IssueSubscription.findOneAndUpdate(
+      filter,
+      update,
+      options
+    );
+    if (updatedSubscription) {
+      return [null, updatedSubscription];
+    }
+    return [new Error('Unable to update IssueSubscription.')];
+  } catch (err) {
+    console.log('Error updating IssueSubscription data to db: ', err);
+  }
+};
+
+export const addIssueToBundle = async payload => {
+  try {
+    const { IssueSubscription } = models;
+    const { userId, issue } = payload;
+    const filter = { userId };
+    const user = await IssueSubscription.findOne(filter);
+    const options = { upsert: true, new: false };
+    // push issue to issues array mongoose
+    const update = {
+      $push: { myisssues: issue },
+      $inc: { 'bundle.left': -1 }
+    };
+    // $push: { 'myisssues': issue, 'bundle.left': { $inc: 1 } }
+    // z
 
     const updatedSubscription = await IssueSubscription.findOneAndUpdate(
       filter,
